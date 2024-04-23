@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "494227310769",
+    "project_id": "ai-recruit-b0885",
+    "storage_bucket": "ai-recruit-b0885.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494227310769:android:8bc81ec2c39c071d3c7a90",
+        "android_client_info": {
+          "package_name": "com.example.job_seeker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIbukDeeKZ_GlDwmibY7et0Ieszkkz8Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
