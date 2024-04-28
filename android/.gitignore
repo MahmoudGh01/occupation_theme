@@ -11,7 +11,3 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
-/gradle/.tmp/
-/gradle/caches/
-/gradle/native/
-/gradle/wrapper/dists/

@@ -7,6 +7,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 import '../job/job_gloabelclass/job_color.dart';
+import '../job/job_gloabelclass/job_fontstyle.dart';
+import '../job/job_gloabelclass/job_icons.dart';
+import '../job/job_pages/job_theme/job_themecontroller.dart';
 import '../models/quiz.dart';
 import '../models/testQ.dart';
 import '../providers/userprovider.dart';
@@ -21,6 +24,12 @@ class ScreenQuiz extends StatefulWidget {
 }
 
 class _ScreenQuizState extends State<ScreenQuiz> {
+  dynamic size;
+  final themedata = Get.put(JobThemecontroler());
+
+  double height = 0.00;
+  double width = 0.00;
+
   Future<Quiz> getQuizById(String id) async {
     Uri fetchUri = Uri.parse("${Constants.uri}/onequiz/${id}");
     Map<String, String> headers = {
@@ -78,22 +87,23 @@ class _ScreenQuizState extends State<ScreenQuiz> {
 
   @override
   Widget build(BuildContext context) {
+    var user = Provider.of<UserProvider>(context).user;
+    size = MediaQuery.of(context).size;
+    height = size.height;
+    width = size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/logo.png',
-              width: 40,
-              height: 40,
-            ),
-            SizedBox(width: 10),
-            Text(
-              'My Job Applications',
-              style: TextStyle(fontSize: 20, fontFamily: 'Roboto'),
-            ),
-          ],
+        leading: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Image.asset(JobPngimage.logo,height: height/36,),
         ),
+        title: Text("Quizzes".tr,style: urbanistBold.copyWith(fontSize: 22 )),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Image.asset(JobPngimage.more,height: height/36,color: themedata.isdark?JobColor.white:JobColor.black,),
+          ),
+        ],
       ),
       body: FutureBuilder<List<TestQ>>(
         future: fetchQuiz(),

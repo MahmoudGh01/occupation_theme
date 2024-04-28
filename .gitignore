@@ -43,3 +43,11 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /.idea/.wiseGPT/
+/web/
+/macos/
+/linux/
+/windows/
+/android/gradle/.tmp/
+/android/gradle/caches/
+/android/gradle/native/
+/android/gradle/wrapper/dists/

@@ -1,8 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.READ_CALENDAR" />
-    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.job_seeker">
     <application
-        android:label="occupation_theme"
+        android:label="Occupation App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

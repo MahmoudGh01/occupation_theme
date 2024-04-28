@@ -92,7 +92,7 @@ class _JobDashboardState extends State<JobDashboard> {
           ),
           activeIcon: Image.asset(JobPngimage.savefill,
               height: height / 36, color: JobColor.appcolor),
-          label: 'Saved Jobs',
+          label: 'Quizzes',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
