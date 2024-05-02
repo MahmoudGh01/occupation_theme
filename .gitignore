@@ -51,3 +51,4 @@ app.*.map.json
 /android/gradle/caches/
 /android/gradle/native/
 /android/gradle/wrapper/dists/
+/android/gradle/

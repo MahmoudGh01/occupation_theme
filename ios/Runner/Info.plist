@@ -2,7 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -21,51 +22,44 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-<key>CFBundleURLTypes</key>
-<array>
-
-  <dict>
-    <key>CFBundleTypeRole</key>
-    <string>Editor</string>
-    <key>CFBundleURLSchemes</key>
-    <array>
-      <string>com.googleusercontent.apps.104792978938-smu99c48hkqint3g8afkm42ffeuikqig</string>
-    </array>
-  </dict>
-
-  <dict>
-    <key>CFBundleURLSchemes</key>
-    <array>
-      <string>phz8gwblacy5isv</string>
-    </array>
-    <key>CFBundleURLName</key>
-    <string></string>
-  </dict>
-</array>
-
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.104792978938-smu99c48hkqint3g8afkm42ffeuikqig</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string></string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>phz8gwblacy5isv</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tel</string>
+		<string>sms</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-    <string>Our application needs access to your camera to take profile pictures.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Our application needs access to your photo library to select profile pictures.</string>
 	<key>NSCalendarsUsageDescription</key>
-    <string>Our application needs access to your calendar to create or edit events.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>your usage description here</string>
-	<key>LSApplicationQueriesSchemes</key>
-       <array>
-           <string>dbapi-8-emm</string>
-           <string>dbapi-2</string>
-       </array>
-    <key>LSApplicationQueriesSchemes</key>
-      <array>
-         <string>tel</string>
-         <string>sms</string>
-      </array>
-
+	<string>Our application needs access to your calendar to create or edit events.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Our application needs access to your camera to take profile pictures.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>your usage description here</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Our application needs access to your photo library to select profile pictures.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -83,11 +77,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-
-
 </dict>
 </plist>

@@ -16,7 +16,7 @@ class AudioRecorderService {
     _filePath = '${directory.path}/interview_recording.aac';
   }
 
-  Future<void> startRecording(String filePath) async {
+  Future<void> startRecording() async {
     await _recorder.startRecorder(toFile: _filePath);
     _isRecording = true;
   }

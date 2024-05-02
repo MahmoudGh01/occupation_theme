@@ -1,24 +1,16 @@
 import 'dart:convert';
-import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:job_seeker/job/job_pages/job_home/job_dashboard.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:path/path.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../job/job_gloabelclass/job_color.dart';
-import '../job/job_gloabelclass/job_fontstyle.dart';
-import '../job/job_gloabelclass/job_icons.dart';
-import '../job/job_pages/job_authentication/job_login.dart';
+
+import '../job/job_pages/job_authentication/job_accountsetup/job_choosejobtype.dart';
 import '../job/job_pages/job_authentication/job_loginoption.dart';
-import '../job/job_pages/job_theme/job_themecontroller.dart';
 import '../models/user.dart';
 import '../providers/userprovider.dart';
-
 import '../utils/constants.dart';
 import '../utils/utils.dart';
 
@@ -191,8 +183,8 @@ class AuthService extends GetxController {
       (Route<dynamic> route) => false, // Remove all routes below
     );
   }
-  void otpverif(
-      {required BuildContext context, required String email}) async {
+
+  void otpverif({required BuildContext context, required String email}) async {
     try {
       var userProvider = Provider.of<UserProvider>(context, listen: false);
 
@@ -217,6 +209,7 @@ class AuthService extends GetxController {
       showSnackBar(context, e.toString());
     }
   }
+
   void forgotPassword(
       {required BuildContext context, required String email}) async {
     try {
@@ -367,10 +360,18 @@ class AuthService extends GetxController {
         await prefs.setString('x-auth-token', responseBody['token']);
         await prefs.setBool('isLoggedIn', true);
         isAuthenticated.value = true;
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => JobDashboard("0")),
-          (route) => false,
-        );
+        userProvider.fetchUserData();
+        if (userProvider.user.role == "Recruiter") {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => JobChoosejobtype()),
+            (route) => false,
+          );
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => JobDashboard("0")),
+            (route) => false,
+          );
+        }
       } else {
         print("Invalid response format received.");
       }

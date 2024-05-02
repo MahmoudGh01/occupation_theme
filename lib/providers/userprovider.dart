@@ -21,7 +21,7 @@ class UserProvider extends ChangeNotifier {
     birthdate: '',
     title: '',
     role: 'user',
-    refresh: '', // Assuming 'user' as default role
+    refresh: '',
   );
 
   User get user => _user;

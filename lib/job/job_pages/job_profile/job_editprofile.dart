@@ -61,7 +61,7 @@ class _JobEditprofileState extends State<JobEditprofile> {
                     setState(() {
                       if (pickedFile != null) {
                         _profileImage = File(pickedFile.path);
-                        //user.profilePicturePath = _profileImage!.path;
+                       // user.profilePicturePath = _profileImage!.path;
                       }
                     });
                   },

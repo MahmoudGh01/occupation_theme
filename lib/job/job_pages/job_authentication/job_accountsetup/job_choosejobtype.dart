@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_seeker/job/job_gloabelclass/job_color.dart';
 import 'package:job_seeker/job/job_gloabelclass/job_icons.dart';
+import 'package:job_seeker/job/job_pages/job_authentication/job_accountsetup/qrcode_auth.dart';
+import 'package:job_seeker/job/job_pages/job_home/job_dashboard.dart';
 import '../../../job_gloabelclass/job_fontstyle.dart';
 import '../../job_theme/job_themecontroller.dart';
 import 'job_selectexpertise.dart';
@@ -98,28 +100,35 @@ class _JobChoosejobtypeState extends State<JobChoosejobtype> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: width/36,vertical: height/56),
+        padding: EdgeInsets.symmetric(horizontal: width/36, vertical: height/56),
         child: InkWell(
-          splashColor:JobColor.transparent,
-          highlightColor:JobColor.transparent,
+          splashColor: JobColor.transparent,
+          highlightColor: JobColor.transparent,
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const JobSelectexpertise();
-            },));
+            if (isselected == 1) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return QRViewExample();  // Assuming QrCodeView is the page for finding employees
+              }));
+            } else {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return JobDashboard("0");  // Assuming JobDashboard is the page for job seekers
+              }));
+            }
           },
           child: Container(
             height: height/15,
             width: width/1,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
-              color:JobColor.appcolor,
+              color: JobColor.appcolor,
             ),
             child: Center(
-              child: Text("Continue".tr,style: urbanistSemiBold.copyWith(fontSize: 16,color:JobColor.white)),
+              child: Text("Continue".tr, style: urbanistSemiBold.copyWith(fontSize: 16, color: JobColor.white)),
             ),
           ),
         ),
       ),
+
     );
   }
 }

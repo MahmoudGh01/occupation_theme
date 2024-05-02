@@ -1,11 +1,15 @@
+import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:job_seeker/providers/userprovider.dart';
 import 'package:job_seeker/services/FileManager.dart';
 import 'package:job_seeker/services/audio_recorder_service.dart';
 import 'package:job_seeker/services/camera_service.dart';
 import 'package:job_seeker/utils/camera_widget.dart';
-import 'package:job_seeker/utils/local_video_widget.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:video_player/video_player.dart';
+
+import '../../../utils/constants.dart';
 
 class InterviewMeetingPage extends StatefulWidget {
   @override
@@ -14,31 +18,35 @@ class InterviewMeetingPage extends StatefulWidget {
 
 class _InterviewMeetingPageState extends State<InterviewMeetingPage> {
   late CameraService _cameraService;
-  late AudioRecorderService _audioRecorderService;
   bool _isRecordingVideo = false;
   bool _isRecordingAudio = false;
+  VideoPlayerController? _controller;
 
   @override
   void initState() {
     super.initState();
+
     _cameraService = CameraService();
-    _audioRecorderService = AudioRecorderService();
+
+    // For a network video
+    _controller = VideoPlayerController.network(
+        'http://192.168.1.14:8000/video?video_name=Video.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
     initialize();
   }
 
   void initialize() async {
     await _cameraService.initializeCamera();
-    await _audioRecorderService.init();
+    _cameraService.controller.enableAudio;
     if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
     _cameraService.dispose();
-    if (_isRecordingAudio) {
-      _audioRecorderService.stopRecording();
-    }
-    _audioRecorderService.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -50,12 +58,7 @@ class _InterviewMeetingPageState extends State<InterviewMeetingPage> {
 
   void _toggleMicrophone() async {
     if (_isRecordingAudio) {
-      await _audioRecorderService.stopRecording();
-    } else {
-      final directory = await getApplicationDocumentsDirectory();
-      final audioPath = '${directory.path}/interview_audio.aac';
-      await _audioRecorderService.startRecording(audioPath);
-    }
+    } else {}
     setState(() {
       _isRecordingAudio = !_isRecordingAudio;
     });
@@ -63,35 +66,55 @@ class _InterviewMeetingPageState extends State<InterviewMeetingPage> {
 
   void _onRecordButtonPressed() async {
     if (_isRecordingVideo && _isRecordingAudio) {
-      await _cameraService.controller.stopVideoRecording();
-      await _audioRecorderService.stopRecording();
-      await getDirectoryfiles();
-      setState(() {
-        _isRecordingVideo = false;
-        _isRecordingAudio = false;
-      });
+      try {
+        // Stop the video recording and get the file
+        XFile videoFile = await _cameraService.controller.stopVideoRecording();
+
+        // Stop the audio recording
+
+        // Create a PlatformFile from the XFile to upload
+        int fileSize = await videoFile.length();
+        PlatformFile platformFile = PlatformFile(
+          name: videoFile.name,
+          path: videoFile.path,
+          size: fileSize,
+          bytes: await videoFile.readAsBytes(),
+        );
+
+        // Define the upload URL
+        String uploadUrl = '${Constants.uri}/upload';
+
+        // Upload the file
+        await FileManager.uploadFile(uploadUrl, platformFile);
+
+        // Update the UI state
+        setState(() {
+          _isRecordingVideo = false;
+          _isRecordingAudio = false;
+        });
+      } catch (e) {
+        // Handle errors, e.g., display a message or log the error
+        print('Error during recording or file upload: $e');
+        setState(() {
+          _isRecordingVideo = false;
+          _isRecordingAudio = false;
+        });
+      }
     } else {
-      final directory = await getTemporaryDirectory();
-      final videoPath = '${directory.path}/interview_video.mp4';
-      final audioPath = '${directory.path}/interview_audio.aac';
+      try {
+        _cameraService.controller.enableAudio;
+        // Start video and audio recordings
+        await _cameraService.controller.startVideoRecording();
 
-      await _cameraService.controller.startVideoRecording();
-      await _audioRecorderService.startRecording(audioPath);
-      setState(() {
-        _isRecordingVideo = true;
-        _isRecordingAudio = true;
-      });
-    }
-  }
-
-  Future<void> getDirectoryfiles() async {
-    // Step 1: Let the user pick a file
-    FilePickerResult? result = await FileManager.pickFile();
-
-    if (result != null) {
-      // Step 2: Get the file from the result
-      PlatformFile file = result.files.first;
-      print('File Picked :$file.name');
+        // Update the UI state
+        setState(() {
+          _isRecordingVideo = true;
+          _isRecordingAudio = true;
+        });
+      } catch (e) {
+        // Handle possible errors during preparation or starting the recording
+        print('Error starting recording: $e');
+      }
     }
   }
 
@@ -99,34 +122,53 @@ class _InterviewMeetingPageState extends State<InterviewMeetingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Interview Meeting')),
-      body: Column(
+      body: Stack(
         children: [
-          const Expanded(
-            child: LocalVideoWidget(
-                videoPath: 'assets/videos/interview_video.mp4'),
+          // Background Video
+          Positioned.fill(
+            child: _controller?.value.isInitialized ?? false
+                ? VideoPlayer(_controller!)
+                : Center(child: CircularProgressIndicator()),
           ),
-          if (_cameraService.isInitialized)
-            CameraPreviewWidget(cameraService: _cameraService),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: Icon(_cameraService.isCameraEnabled
-                    ? Icons.videocam
-                    : Icons.videocam_off),
-                onPressed: _toggleCamera,
-              ),
-              IconButton(
-                icon: Icon(_isRecordingAudio ? Icons.mic : Icons.mic_off),
-                onPressed: _toggleMicrophone,
-              ),
-              ElevatedButton(
-                onPressed: _onRecordButtonPressed,
-                child: Text(_isRecordingVideo && _isRecordingAudio
-                    ? 'Stop Recording'
-                    : 'Start Recording'),
-              ),
-            ],
+          // Camera Preview
+          Positioned(
+            right: 16,
+            bottom: 120,
+            child: _cameraService.isInitialized &&
+                    _cameraService.isCameraEnabled
+                ? Container(
+                    width: 100,
+                    height: 150,
+                    child: CameraPreviewWidget(cameraService: _cameraService),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  )
+                : Container(),
+          ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FloatingActionButton(
+            onPressed: _toggleCamera,
+            child: Icon(_cameraService.isCameraEnabled
+                ? Icons.videocam
+                : Icons.videocam_off),
+            backgroundColor: Colors.blue,
+          ),
+          FloatingActionButton(
+            onPressed: _onRecordButtonPressed,
+            child: Icon(_isRecordingVideo ? Icons.call_end : Icons.video_call),
+            backgroundColor: _isRecordingVideo ? Colors.red : Colors.green,
+          ),
+          FloatingActionButton(
+            onPressed: _toggleMicrophone,
+            child: Icon(_isRecordingAudio ? Icons.mic : Icons.mic_off),
+            backgroundColor: Colors.blue,
           ),
         ],
       ),

@@ -36,7 +36,7 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> {
     _controller = CameraController(
       frontCamera, // Use the front-facing camera here
       ResolutionPreset.medium,
-      enableAudio: false,
+      enableAudio: true,
     );
 
     // Next, initialize the controller. This returns a Future.

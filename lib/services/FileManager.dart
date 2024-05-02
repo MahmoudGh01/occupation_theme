@@ -62,7 +62,8 @@ class FileManager {
       // Allow multiple file types or remove to allow all types
     );
   }
-  Future<http.Response?> uploadFile(String url, PlatformFile file) async {
+
+  static Future<http.Response?> uploadFile(String url, PlatformFile file) async {
     try {
       // Ensure the file path is not null
       final filePath = file.path;
@@ -72,7 +73,6 @@ class FileManager {
       }
 
       var request = http.MultipartRequest('POST', Uri.parse(url));
-
       // Add the file to the request using the non-null file path
       request.files.add(await http.MultipartFile.fromPath(
         'resume', // The field name expected by the server for the file
