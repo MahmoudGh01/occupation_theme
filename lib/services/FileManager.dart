@@ -54,7 +54,6 @@ class FileManager {
   }
 
  static Future<FilePickerResult?> pickFile() async {
-   Future<Directory> d = getApplicationDocumentsDirectory() ;
 
     return await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -79,7 +78,6 @@ class FileManager {
         filePath, // Use the non-null file path
         filename: file.name, // Optionally include the filename
       ));
-
       var response = await request.send();
 
       // Handle the response from the server
@@ -96,6 +94,41 @@ class FileManager {
       return null;
     }
   }
+
+  static Future<http.Response?> uploadFiles(String url, List<PlatformFile> files) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+
+      // Iterate over each file and add them to the request
+      for (var file in files) {
+        final filePath = file.path;
+        if (filePath == null) {
+          print('File path is null');
+          continue; // Skip this file and proceed to the next one
+        }
+
+        request.files.add(await http.MultipartFile.fromPath(
+          'files[]', // Use an array field name to send multiple files
+          filePath,
+          filename: file.name,
+        ));
+      }
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        print("Files uploaded successfully");
+        return await http.Response.fromStream(response);
+      } else {
+        print('Failed to upload files: Server responded with status code ${response.statusCode}');
+        return await http.Response.fromStream(response);
+      }
+    } catch (e) {
+      print('Error uploading files: $e');
+      return null;
+    }
+  }
+
 
 
 

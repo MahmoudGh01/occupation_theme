@@ -30,7 +30,7 @@ class _InterviewMeetingPageState extends State<InterviewMeetingPage> {
 
     // For a network video
     _controller = VideoPlayerController.network(
-        'http://192.168.1.14:8000/video?video_name=Video.mp4')
+        '${Constants.uri}/video?video_name=Video.mp4')
       ..initialize().then((_) {
         setState(() {});
       });

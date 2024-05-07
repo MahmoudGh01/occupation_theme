@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_seeker/job/job_gloabelclass/job_color.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/userprovider.dart';
 import '../../../services/FileManager.dart';
 import '../../../utils/constants.dart';
 import '../../job_gloabelclass/job_fontstyle.dart';
@@ -48,7 +50,9 @@ class _JobResumeState extends State<JobResume> {
   }
 
   Future<List<String>> fetchFilesList() async {
-    final response = await http.get(Uri.parse('${Constants.uri}/files'));
+    final user = Provider.of<UserProvider>(context).user;
+
+    final response = await http.get(Uri.parse('${Constants.uri}/FilesbyUser/${user.id}'));
 
     if (response.statusCode == 200) {
       List<dynamic> files = jsonDecode(response.body);

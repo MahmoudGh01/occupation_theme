@@ -1,5 +1,6 @@
 import 'package:job_seeker/utils/constants.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import 'package:flutter/material.dart';
@@ -42,24 +43,24 @@ class _QRViewExampleState extends State<QRViewExample> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
 
-    controller.scannedDataStream.listen((scanData) {
+    controller.scannedDataStream.listen((scanData) async {
       controller.pauseCamera();
       var user = Provider.of<UserProvider>(context, listen: false).user;
       var session_id = scanData.code; // Extract session ID from the QR code
       var token = user.token;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
+      String? refreshToken = prefs.getString('refresh');
+      print(refreshToken);
       // Emit 'validate_qr' event with session_id and user_id
       socket?.emit('validate_qr', {
         'session_id': session_id,
         'user_id': token,
-
+        'refresh_token': refreshToken
       });
       //socket?.disconnect();
-
-
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
